@@ -1,0 +1,26 @@
+serviceName: shikshaspace-service
+namespace: prod
+replicaCount: 2
+
+image:
+  repository: registry.gitlab.com/shubhamsinghhrx/shikshaspace-service
+  tag: "1.0.2067961336"  # Stable version for production
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 7502
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+healthChecks:
+  enabled: true
+  livenessPath: "/actuator/health"
+  readinessPath: "/actuator/health"
