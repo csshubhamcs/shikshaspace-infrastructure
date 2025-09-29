@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://gitlab.com/shubhamsinghhrx/shikshaspace-infrastructure.git
     targetRevision: HEAD
-    path: microservice
+    path: microservices
     helm:
       valueFiles:
         - ../environments/prod/values-user-service.yaml
@@ -33,7 +33,7 @@ spec:
   source:
     repoURL: https://gitlab.com/shubhamsinghhrx/shikshaspace-infrastructure.git
     targetRevision: HEAD
-    path: microservice
+    path: microservices
     helm:
       valueFiles:
         - ../environments/prod/values-shikshaspace-service.yaml
