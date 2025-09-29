@@ -1,11 +1,5 @@
 apiVersion: v2
 name: microservice
-description: Generic microservice Helm chart for reactive Java apps
-version: 1.0.0
-appVersion: "1.0.0"
-keywords:
-  - microservice
-  - spring-boot
-  - reactive
-maintainers:
-  - name: ShubhamSingh
+description: A Helm chart for microservices
+version: 0.1.0
+appVersion: "1.0"
