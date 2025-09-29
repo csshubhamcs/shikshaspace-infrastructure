@@ -13,6 +13,8 @@ spec:
       labels:
         app: {{ .Values.serviceName }}
     spec:
+      imagePullSecrets:
+        - name: gitlab-registry-secret
       containers:
         - name: {{ .Values.serviceName }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
