@@ -4,7 +4,7 @@ replicaCount: 2
 
 image:
   repository: registry.gitlab.com/shubhamsinghhrx/shikshaspace-service
-  tag: "1.0.2067961336"  # Stable version for production
+  tag: "latest  # Stable version for production
   pullPolicy: Always
 
 service:
