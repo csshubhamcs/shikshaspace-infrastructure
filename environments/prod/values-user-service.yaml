@@ -3,7 +3,7 @@ namespace: prod
 replicaCount: 2  # Higher replicas for production
 
 image:
-  repository: registry.gitlab.com/shubhamsingh/hrx/user-service
+  repository: registry.gitlab.com/shubhamsinghhrx/user-service
   tag: "latest"
   pullPolicy: Always
 
