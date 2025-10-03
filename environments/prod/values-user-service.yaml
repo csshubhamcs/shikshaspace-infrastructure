@@ -11,6 +11,7 @@ service:
   type: NodePort
   port: 80
   targetPort: 7501
+  nodePort: 30001
 
 resources:
   requests:
