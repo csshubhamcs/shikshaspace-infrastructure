@@ -1,27 +1,69 @@
 serviceName: user-service
 namespace: prod
-replicaCount: 2  # Higher replicas for production
+replicaCount: 2
 
 image:
   repository: registry.gitlab.com/shubhamsinghhrx/user-service
-  tag: "latest"
+  tag: latest
   pullPolicy: Always
 
 service:
-  type: NodePort
+  type: NodePort              # Changed from ClusterIP
   port: 80
   targetPort: 7501
-  nodePort: 30001
+  nodePort: 30001            # ADD THIS
+
+env:
+  - name: DB_URL
+    valueFrom:
+      secretKeyRef:
+        name: user-service-secrets
+        key: DB_URL
+  - name: DB_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: user-service-secrets
+        key: DB_USERNAME
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: user-service-secrets
+        key: DB_PASSWORD
+  - name: KEYCLOAK_ISSUER_URI
+    valueFrom:
+      secretKeyRef:
+        name: user-service-secrets
+        key: KEYCLOAK_ISSUER_URI
+  - name: KEYCLOAK_JWK_SET_URI
+    valueFrom:
+      secretKeyRef:
+        name: user-service-secrets
+        key: KEYCLOAK_JWK_SET_URI
+  - name: KEYCLOAK_URL
+    valueFrom:
+      secretKeyRef:
+        name: user-service-secrets
+        key: KEYCLOAK_URL
+  - name: KEYCLOAK_ADMIN_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: user-service-secrets
+        key: KEYCLOAK_ADMIN_USERNAME
+  - name: KEYCLOAK_ADMIN_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: user-service-secrets
+        key: KEYCLOAK_ADMIN_PASSWORD
 
 resources:
   requests:
-    memory: "256Mi"  # Higher resources for production
-    cpu: "250m"
+    memory: 256Mi
+    cpu: 250m
   limits:
-    memory: "512Mi"
-    cpu: "500m"
+    memory: 512Mi
+    cpu: 500m
 
 healthChecks:
   enabled: true
-  livenessPath: "/actuator/health"
-  readinessPath: "/actuator/health"
+  livenessPath: /actuator/health
+  readinessPath: /actuator/health
