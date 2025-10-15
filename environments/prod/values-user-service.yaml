@@ -13,12 +13,12 @@ service:
   targetPort: 7501
   nodePort: 30001
 
-# ADD/UPDATE THESE SECTIONS
+# Only add probe settings - env comes from secret
 livenessProbe:
   httpGet:
     path: /actuator/health
     port: 7501
-  initialDelaySeconds: 120    # Wait 2 minutes before first check
+  initialDelaySeconds: 120
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
@@ -27,10 +27,7 @@ readinessProbe:
   httpGet:
     path: /actuator/health
     port: 7501
-  initialDelaySeconds: 90     # Wait 90 seconds before first check
+  initialDelaySeconds: 90
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
-
-env:
-# ... your existing env section
