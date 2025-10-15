@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: user-service-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://gitlab.com/YOUR_GITLAB_USERNAME/shikshaspace-infrastructure.git
+    targetRevision: main
+    path: helm-charts/reactive-microservice
+    helm:
+      valueFiles:
+        - ../../environments/prod/user-service-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false

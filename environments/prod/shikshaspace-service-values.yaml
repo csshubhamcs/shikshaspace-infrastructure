@@ -1,0 +1,9 @@
+# Production values for shikshaspace-service
+image:
+  repository: registry.gitlab.com/YOUR_GITLAB_USERNAME/shikshaspace-service
+  tag: "latest"
+
+service:
+  targetPort: 7502
+
+fullnameOverride: shikshaspace-service
