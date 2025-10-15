@@ -8,62 +8,29 @@ image:
   pullPolicy: Always
 
 service:
-  type: NodePort              # Changed from ClusterIP
+  type: NodePort
   port: 80
   targetPort: 7501
-  nodePort: 30001            # ADD THIS
+  nodePort: 30001
+
+# ADD/UPDATE THESE SECTIONS
+livenessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 7501
+  initialDelaySeconds: 120    # Wait 2 minutes before first check
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 7501
+  initialDelaySeconds: 90     # Wait 90 seconds before first check
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
 
 env:
-  - name: DB_URL
-    valueFrom:
-      secretKeyRef:
-        name: user-service-secrets
-        key: DB_URL
-  - name: DB_USERNAME
-    valueFrom:
-      secretKeyRef:
-        name: user-service-secrets
-        key: DB_USERNAME
-  - name: DB_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: user-service-secrets
-        key: DB_PASSWORD
-  - name: KEYCLOAK_ISSUER_URI
-    valueFrom:
-      secretKeyRef:
-        name: user-service-secrets
-        key: KEYCLOAK_ISSUER_URI
-  - name: KEYCLOAK_JWK_SET_URI
-    valueFrom:
-      secretKeyRef:
-        name: user-service-secrets
-        key: KEYCLOAK_JWK_SET_URI
-  - name: KEYCLOAK_URL
-    valueFrom:
-      secretKeyRef:
-        name: user-service-secrets
-        key: KEYCLOAK_URL
-  - name: KEYCLOAK_ADMIN_USERNAME
-    valueFrom:
-      secretKeyRef:
-        name: user-service-secrets
-        key: KEYCLOAK_ADMIN_USERNAME
-  - name: KEYCLOAK_ADMIN_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: user-service-secrets
-        key: KEYCLOAK_ADMIN_PASSWORD
-
-resources:
-  requests:
-    memory: 256Mi
-    cpu: 250m
-  limits:
-    memory: 512Mi
-    cpu: 500m
-
-healthChecks:
-  enabled: true
-  livenessPath: /actuator/health
-  readinessPath: /actuator/health
+# ... your existing env section
