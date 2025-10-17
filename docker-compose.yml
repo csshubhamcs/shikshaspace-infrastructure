@@ -1,46 +1,14 @@
 services:
-  traefik:
-    image: traefik:v2.10
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-      - "9090:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
-    networks:
-      - web
-
   user-service:
     image: registry.gitlab.com/shubhamsinghhrx/user-service:v1.0.27
     env_file: .env
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.user.rule=PathPrefix(`/user`)"
-      - "traefik.http.routers.user.middlewares=user-strip"
-      - "traefik.http.middlewares.user-strip.stripprefix.prefixes=/user"
-      - "traefik.http.services.user.loadbalancer.server.port=7501"
+    ports:
+      - "7501:7501"
     restart: always
-    networks:
-      - web
 
   shikshaspace-service:
     image: registry.gitlab.com/shubhamsinghhrx/shikshaspace-service:v1.0.24
     env_file: .env
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.shikshaspace.rule=PathPrefix(`/shikshaspace`)"
-      - "traefik.http.routers.shikshaspace.middlewares=shikshaspace-strip"
-      - "traefik.http.middlewares.shikshaspace-strip.stripprefix.prefixes=/shikshaspace"
-      - "traefik.http.services.shikshaspace.loadbalancer.server.port=7502"
+    ports:
+      - "7502:7502"
     restart: always
-    networks:
-      - web
-
-networks:
-  web:
-    driver: bridge
