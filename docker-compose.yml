@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.10
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "9090:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
+  user-service:
+    image: registry.gitlab.com/shubhamsinghhrx/user-service:v1.0.27
+    env_file: .env
+    expose:
+      - "7501"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user.rule=PathPrefix(`/user`)"
+      - "traefik.http.services.user.loadbalancer.server.port=7501"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:7501/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: always
+
+  shikshaspace-service:
+    image: registry.gitlab.com/shubhamsinghhrx/shikshaspace-service:v1.0.24
+    env_file: .env
+    expose:
+      - "7502"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.shikshaspace.rule=PathPrefix(`/shikshaspace`)"
+      - "traefik.http.services.shikshaspace.loadbalancer.server.port=7502"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:7502/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: always
