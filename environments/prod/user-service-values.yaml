@@ -1,9 +1,0 @@
-# Production values for user-service
-image:
-  repository: registry.gitlab.com/YOUR_GITLAB_USERNAME/user-service
-  tag: "latest"
-
-service:
-  targetPort: 7501
-
-fullnameOverride: user-service
