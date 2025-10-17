@@ -16,7 +16,7 @@ services:
       KC_HEALTH_ENABLED: "true"
     ports:
       - "8080:8080"
-    command: start --optimized
+    command: start
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
       interval: 30s
