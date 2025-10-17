@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   traefik:
     image: traefik:v2.10
@@ -22,6 +20,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.user.rule=PathPrefix(`/user`)"
+      - "traefik.http.routers.user.middlewares=user-strip"
+      - "traefik.http.middlewares.user-strip.stripprefix.prefixes=/user"
       - "traefik.http.services.user.loadbalancer.server.port=7501"
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:7501/api/health"]
@@ -39,6 +39,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.shikshaspace.rule=PathPrefix(`/shikshaspace`)"
+      - "traefik.http.routers.shikshaspace.middlewares=shikshaspace-strip"
+      - "traefik.http.middlewares.shikshaspace-strip.stripprefix.prefixes=/shikshaspace"
       - "traefik.http.services.shikshaspace.loadbalancer.server.port=7502"
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:7502/api/health"]
