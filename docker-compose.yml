@@ -1,6 +1,6 @@
 services:
   user-service:
-    image: registry.gitlab.com/shubhamsinghhrx/user-service:latest
+    image: registry.gitlab.com/shikshaspace/user-service:v1.0.30
     env_file: .env
     expose:
       - "7501"
@@ -13,7 +13,7 @@ services:
       start_period: 40s
 
   shikshaspace-service:
-    image: registry.gitlab.com/shubhamsinghhrx/shikshaspace-service:latest
+    image: registry.gitlab.com/shikshaspace/shikshaspace-service:v1.0.25
     env_file: .env
     expose:
       - "7502"
