@@ -6,7 +6,7 @@ services:
       - "7501:7501"
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7501/actuator/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7501/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -19,7 +19,7 @@ services:
       - "7502:7502"
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7502/actuator/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7502/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 3
