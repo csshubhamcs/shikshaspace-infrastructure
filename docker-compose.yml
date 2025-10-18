@@ -1,14 +1,26 @@
 services:
   user-service:
-    image: registry.gitlab.com/shubhamsinghhrx/user-service:v1.0.29
+    image: registry.gitlab.com/shubhamsinghhrx/user-service:latest
     env_file: .env
-    ports:
-      - "7501:7501"
+    expose:
+      - "7501"
     restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7501/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
 
   shikshaspace-service:
-    image: registry.gitlab.com/shubhamsinghhrx/shikshaspace-service:v1.0.24
+    image: registry.gitlab.com/shubhamsinghhrx/shikshaspace-service:latest
     env_file: .env
-    ports:
-      - "7502:7502"
+    expose:
+      - "7502"
     restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7502/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
