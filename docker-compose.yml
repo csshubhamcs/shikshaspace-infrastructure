@@ -1,6 +1,6 @@
 services:
   user-service:
-    image: registry.gitlab.com/shubhamsinghhrx/user-service:v1.0.27
+    image: registry.gitlab.com/shubhamsinghhrx/user-service:v1.0.29
     env_file: .env
     ports:
       - "7501:7501"
