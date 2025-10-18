@@ -2,8 +2,8 @@ services:
   user-service:
     image: registry.gitlab.com/shikshaspace/user-service:v1.0.30
     env_file: .env
-    expose:
-      - "7501"
+    ports:
+      - "7501:7501"
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7501/actuator/health"]
@@ -15,8 +15,8 @@ services:
   shikshaspace-service:
     image: registry.gitlab.com/shikshaspace/shikshaspace-service:v1.0.25
     env_file: .env
-    expose:
-      - "7502"
+    ports:
+      - "7502:7502"
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7502/actuator/health"]
