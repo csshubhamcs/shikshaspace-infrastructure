@@ -1,6 +1,6 @@
 services:
   user-service:
-    image: registry.gitlab.com/shikshaspace/user-service:v1.0.33
+    image: registry.gitlab.com/shikshaspace/user-service:v1.0.34
     env_file: .env
     ports:
       - "7501:7501"
