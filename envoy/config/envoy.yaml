@@ -50,7 +50,7 @@ static_resources:
                           route:
                             cluster: ui_cluster
                             timeout: 60s
-                            auto_host_rewrite: true
+                            host_rewrite_literal: "localhost"
 
                     - name: user_service
                       domains: ["users.shubhamsinghrajput.com"]
@@ -59,7 +59,7 @@ static_resources:
                           route:
                             cluster: user_service_cluster
                             timeout: 30s
-                            auto_host_rewrite: true
+                            ahost_rewrite_literal: "localhost"
 
                     - name: shikshaspace_service
                       domains: ["shikshaspace.shubhamsinghrajput.com"]
@@ -68,7 +68,7 @@ static_resources:
                           route:
                             cluster: shikshaspace_service_cluster
                             timeout: 30s
-                            auto_host_rewrite: true
+                            host_rewrite_literal: "localhost"
 
                     - name: keycloak
                       domains: ["keycloak.shubhamsinghrajput.com"]
@@ -77,7 +77,7 @@ static_resources:
                           route:
                             cluster: keycloak_cluster
                             timeout: 60s
-                            auto_host_rewrite: true
+                            host_rewrite_literal: "localhost"
 
                 http_filters:
                   - name: envoy.filters.http.router
