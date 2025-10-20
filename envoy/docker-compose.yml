@@ -11,8 +11,4 @@ services:
     volumes:
       - ./config/envoy.yaml:/etc/envoy/envoy.yaml:ro
       - ./logs:/var/log/envoy
-    command:
-      - -c
-      - /etc/envoy/envoy.yaml
-      - --log-level
-      - info
+    command: ["-c", "/etc/envoy/envoy.yaml", "--log-level", "info"]
