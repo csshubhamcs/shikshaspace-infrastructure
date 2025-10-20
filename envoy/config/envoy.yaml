@@ -59,7 +59,7 @@ static_resources:
                           route:
                             cluster: user_service_cluster
                             timeout: 30s
-                            ahost_rewrite_literal: "localhost"
+                            host_rewrite_literal: "localhost"
 
                     - name: shikshaspace_service
                       domains: ["shikshaspace.shubhamsinghrajput.com"]
