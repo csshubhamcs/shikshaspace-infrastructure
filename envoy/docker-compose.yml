@@ -8,7 +8,6 @@ services:
     network_mode: host
     volumes:
       - ./config/envoy.yaml:/etc/envoy/envoy.yaml:ro
-      - ./certs:/etc/envoy/certs:ro
       - ./logs:/var/log/envoy
     command:
       - -c
