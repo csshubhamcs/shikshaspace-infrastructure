@@ -48,7 +48,7 @@ static_resources:
                       routes:
                         - match: {prefix: "/"}
                           route:
-                            cluster: ui_cluster
+                            cluster: ui-cluster
                             timeout: 60s
                             host_rewrite_literal: "localhost"
 
@@ -57,7 +57,7 @@ static_resources:
                       routes:
                         - match: {prefix: "/"}
                           route:
-                            cluster: user_service_cluster
+                            cluster: user-service-cluster
                             timeout: 30s
                             host_rewrite_literal: "localhost"
 
@@ -66,7 +66,7 @@ static_resources:
                       routes:
                         - match: {prefix: "/"}
                           route:
-                            cluster: shikshaspace_service_cluster
+                            cluster: shikshaspace-service-cluster
                             timeout: 30s
                             host_rewrite_literal: "localhost"
 
@@ -75,7 +75,7 @@ static_resources:
                       routes:
                         - match: {prefix: "/"}
                           route:
-                            cluster: keycloak_cluster
+                            cluster: keycloak-cluster
                             timeout: 60s
                             host_rewrite_literal: "localhost"
 
@@ -86,7 +86,7 @@ static_resources:
 
   clusters:
     # UI Cluster - Load balance Blue/Green
-    - name: ui_cluster
+    - name: ui-cluster
       connect_timeout: 5s
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN
@@ -98,7 +98,7 @@ static_resources:
           http_health_check:
             path: /actuator/health/readiness
       load_assignment:
-        cluster_name: ui_cluster
+        cluster_name: ui-cluster
         endpoints:
           - lb_endpoints:
               - endpoint:
@@ -113,7 +113,7 @@ static_resources:
                       port_value: 7510
 
     # User Service - Load balance Blue/Green
-    - name: user_service_cluster
+    - name: user-service-cluster
       connect_timeout: 5s
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN
@@ -125,7 +125,7 @@ static_resources:
           http_health_check:
             path: /actuator/health/readiness
       load_assignment:
-        cluster_name: user_service_cluster
+        cluster_name: user-service-cluster
         endpoints:
           - lb_endpoints:
               - endpoint:
@@ -140,7 +140,7 @@ static_resources:
                       port_value: 7511
 
     # ShikshaSpace Service - Load balance Blue/Green
-    - name: shikshaspace_service_cluster
+    - name: shikshaspace-service-cluster
       connect_timeout: 5s
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN
@@ -167,7 +167,7 @@ static_resources:
                       port_value: 7512
 
     # Keycloak
-    - name: keycloak_cluster
+    - name: keycloak-cluster
       connect_timeout: 5s
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN
@@ -179,7 +179,7 @@ static_resources:
           http_health_check:
             path: /health
       load_assignment:
-        cluster_name: keycloak_cluster
+        cluster_name: keycloak-cluster
         endpoints:
           - lb_endpoints:
               - endpoint:
