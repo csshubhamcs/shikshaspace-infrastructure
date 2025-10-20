@@ -86,13 +86,13 @@ static_resources:
       connect_timeout: 5s
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN
-      health_checks:
-        - timeout: 5s
-          interval: 10s
-          unhealthy_threshold: 2
-          healthy_threshold: 2
-          http_health_check:
-            path: /actuator/health/readiness
+#      health_checks:
+#        - timeout: 5s
+#          interval: 10s
+#          unhealthy_threshold: 2
+#          healthy_threshold: 2
+#          http_health_check:
+#            path: /actuator/health     // uncomment any time
       load_assignment:
         cluster_name: ui-cluster
         endpoints:
