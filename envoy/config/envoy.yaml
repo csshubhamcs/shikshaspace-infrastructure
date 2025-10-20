@@ -45,6 +45,7 @@ static_resources:
                             retry_policy:
                               retry_on: "5xx,reset,connect-failure,refused-stream"
                               num_retries: 2
+                              per_try_timeout: 30s
 
                     - name: user_service
                       domains: ["users.shubhamsinghrajput.com"]
@@ -56,6 +57,7 @@ static_resources:
                             retry_policy:
                               retry_on: "5xx,reset,connect-failure,refused-stream"
                               num_retries: 2
+                              per_try_timeout: 15s
 
                     - name: shikshaspace_service
                       domains: ["shikshaspace.shubhamsinghrajput.com"]
@@ -67,6 +69,7 @@ static_resources:
                             retry_policy:
                               retry_on: "5xx,reset,connect-failure,refused-stream"
                               num_retries: 2
+                              per_try_timeout: 15s
 
                     - name: keycloak
                       domains: ["keycloak.shubhamsinghrajput.com"]
@@ -82,10 +85,11 @@ static_resources:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
 
   clusters:
-    # UI Cluster - Passive health check only
+    # UI Cluster - Docker network hostnames
     - name: ui-cluster
       connect_timeout: 5s
       type: STRICT_DNS
+      dns_lookup_family: V4_ONLY
       lb_policy: ROUND_ROBIN
       outlier_detection:
         consecutive_5xx: 5
@@ -95,6 +99,7 @@ static_resources:
         max_ejection_percent: 50
         enforcing_consecutive_5xx: 100
         enforcing_consecutive_gateway_failure: 100
+        split_external_local_origin_errors: true
       load_assignment:
         cluster_name: ui-cluster
         endpoints:
@@ -102,18 +107,19 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: 127.0.0.1
+                      address: shikshaspace-ui
                       port_value: 7500
               - endpoint:
                   address:
                     socket_address:
-                      address: 127.0.0.1
+                      address: shikshaspace-ui-green
                       port_value: 7510
 
-    # User Service - Active + Passive health check
+    # User Service - Docker network hostnames
     - name: user-service-cluster
       connect_timeout: 5s
       type: STRICT_DNS
+      dns_lookup_family: V4_ONLY
       lb_policy: ROUND_ROBIN
       health_checks:
         - timeout: 5s
@@ -122,12 +128,14 @@ static_resources:
           healthy_threshold: 2
           http_health_check:
             path: /actuator/health/readiness
+          no_traffic_interval: 5s
       outlier_detection:
         consecutive_5xx: 5
         consecutive_gateway_failure: 3
         interval: 10s
         base_ejection_time: 30s
         max_ejection_percent: 50
+        split_external_local_origin_errors: true
       load_assignment:
         cluster_name: user-service-cluster
         endpoints:
@@ -135,18 +143,19 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: 127.0.0.1
+                      address: user-service
                       port_value: 7501
               - endpoint:
                   address:
                     socket_address:
-                      address: 127.0.0.1
+                      address: user-service-green
                       port_value: 7511
 
-    # ShikshaSpace Service - Active + Passive health check
+    # ShikshaSpace Service - Docker network hostnames
     - name: shikshaspace-service-cluster
       connect_timeout: 5s
       type: STRICT_DNS
+      dns_lookup_family: V4_ONLY
       lb_policy: ROUND_ROBIN
       health_checks:
         - timeout: 5s
@@ -155,12 +164,14 @@ static_resources:
           healthy_threshold: 2
           http_health_check:
             path: /actuator/health/readiness
+          no_traffic_interval: 5s
       outlier_detection:
         consecutive_5xx: 5
         consecutive_gateway_failure: 3
         interval: 10s
         base_ejection_time: 30s
         max_ejection_percent: 50
+        split_external_local_origin_errors: true
       load_assignment:
         cluster_name: shikshaspace-service-cluster
         endpoints:
@@ -168,18 +179,19 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: 127.0.0.1
+                      address: shikshaspace-service
                       port_value: 7502
               - endpoint:
                   address:
                     socket_address:
-                      address: 127.0.0.1
+                      address: shikshaspace-service-green
                       port_value: 7512
 
-    # Keycloak - Active health check only
+    # Keycloak - localhost (assuming on host network)
     - name: keycloak-cluster
       connect_timeout: 5s
       type: STRICT_DNS
+      dns_lookup_family: V4_ONLY
       lb_policy: ROUND_ROBIN
       health_checks:
         - timeout: 5s
@@ -188,6 +200,7 @@ static_resources:
           healthy_threshold: 2
           http_health_check:
             path: /health
+          no_traffic_interval: 10s
       load_assignment:
         cluster_name: keycloak-cluster
         endpoints:
