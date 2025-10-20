@@ -4,197 +4,104 @@ services:
   user-service-blue:
     image: registry.gitlab.com/shikshaspace/user-service:${USER_SERVICE_VERSION}
     container_name: user-service-blue
-    hostname: user-service
     env_file: ./user-service/.env
     environment:
       SERVER_PORT: 7501
       SPRING_PROFILES_ACTIVE: blue
     restart: always
     stop_grace_period: 60s
-    ports:
-      - "7501:7501"
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:7501/actuator/health/readiness"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 40s
-    networks:
-      - shikshaspace-network
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-        reservations:
-          cpus: '1.0'
-          memory: 512M
+    network_mode: host
 
   user-service-green:
     image: registry.gitlab.com/shikshaspace/user-service:${USER_SERVICE_VERSION}
     container_name: user-service-green
-    hostname: user-service-green
     env_file: ./user-service/.env
     environment:
       SERVER_PORT: 7511
       SPRING_PROFILES_ACTIVE: green
     restart: always
     stop_grace_period: 60s
-    ports:
-      - "7511:7511"
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:7511/actuator/health/readiness"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 40s
-    networks:
-      - shikshaspace-network
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-        reservations:
-          cpus: '1.0'
-          memory: 512M
+    network_mode: host
     profiles: ["green"]
 
   shikshaspace-service-blue:
     image: registry.gitlab.com/shikshaspace/shikshaspace-service:${SHIKSHASPACE_VERSION}
     container_name: shikshaspace-service-blue
-    hostname: shikshaspace-service
     env_file: ./shikshaspace-service/.env
     environment:
       SERVER_PORT: 7502
       SPRING_PROFILES_ACTIVE: blue
     restart: always
     stop_grace_period: 60s
-    ports:
-      - "7502:7502"
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:7502/actuator/health/readiness"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 20s
-    networks:
-      - shikshaspace-network
-    depends_on:
-      user-service-blue:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-        reservations:
-          cpus: '1.0'
-          memory: 512M
+    network_mode: host
 
   shikshaspace-service-green:
     image: registry.gitlab.com/shikshaspace/shikshaspace-service:${SHIKSHASPACE_VERSION}
     container_name: shikshaspace-service-green
-    hostname: shikshaspace-service-green
     env_file: ./shikshaspace-service/.env
     environment:
       SERVER_PORT: 7512
       SPRING_PROFILES_ACTIVE: green
     restart: always
     stop_grace_period: 60s
-    ports:
-      - "7512:7512"
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:7512/actuator/health/readiness"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 20s
-    networks:
-      - shikshaspace-network
-    depends_on:
-      user-service-blue:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-        reservations:
-          cpus: '1.0'
-          memory: 512M
+    network_mode: host
     profiles: ["green"]
 
   shikshaspace-ui-blue:
     image: registry.gitlab.com/shikshaspace/shikshaspace-ui:${UI_VERSION}
     container_name: shikshaspace-ui-blue
-    hostname: shikshaspace-ui
     env_file: ./shikshaspace-ui/.env
     environment:
       SERVER_PORT: 7500
       SPRING_PROFILES_ACTIVE: blue
     restart: always
     stop_grace_period: 60s
-    ports:
-      - "7500:7500"
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:7500/"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 40s
-    networks:
-      - shikshaspace-network
-    depends_on:
-      user-service-blue:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1536M
-        reservations:
-          cpus: '1.0'
-          memory: 768M
+    network_mode: host
 
   shikshaspace-ui-green:
     image: registry.gitlab.com/shikshaspace/shikshaspace-ui:${UI_VERSION}
     container_name: shikshaspace-ui-green
-    hostname: shikshaspace-ui-green
     env_file: ./shikshaspace-ui/.env
     environment:
       SERVER_PORT: 7510
       SPRING_PROFILES_ACTIVE: green
     restart: always
     stop_grace_period: 60s
-    ports:
-      - "7510:7510"
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:7510/"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 40s
-    networks:
-      - shikshaspace-network
-    depends_on:
-      user-service-blue:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1536M
-        reservations:
-          cpus: '1.0'
-          memory: 768M
+    network_mode: host
     profiles: ["green"]
-
-networks:
-  shikshaspace-network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.28.0.0/16
-    driver_opts:
-      com.docker.network.bridge.name: shikshaspace0
