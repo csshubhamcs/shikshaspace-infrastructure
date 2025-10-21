@@ -6,7 +6,8 @@ services:
     container_name: user-service
     env_file:
       - ./user-service/.env
-    network_mode: host
+    ports:
+      - "7501:7501"
     restart: always
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7501/actuator/health"]
@@ -20,7 +21,8 @@ services:
     container_name: shikshaspace-service
     env_file:
       - ./shikshaspace-service/.env
-    network_mode: host
+    ports:
+      - "7502:7502"
     restart: always
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7502/actuator/health"]
@@ -34,7 +36,8 @@ services:
     container_name: shikshaspace-ui
     env_file:
       - ./shikshaspace-ui/.env
-    network_mode: host
+    ports:
+      - "7500:7500"
     restart: always
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7500/"]

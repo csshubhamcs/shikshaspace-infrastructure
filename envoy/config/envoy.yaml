@@ -26,41 +26,33 @@ static_resources:
                   name: main_route
                   virtual_hosts:
                     - name: ui_service
-                      domains:
-                        - "shubhamsinghrajput.com"
+                      domains: ["shubhamsinghrajput.com"]
                       routes:
-                        - match:
-                            prefix: "/"
+                        - match: {prefix: "/"}
                           route:
                             cluster: ui_cluster
                             timeout: 60s
 
                     - name: user_service
-                      domains:
-                        - "users.shubhamsinghrajput.com"
+                      domains: ["users.shubhamsinghrajput.com"]
                       routes:
-                        - match:
-                            prefix: "/"
+                        - match: {prefix: "/"}
                           route:
                             cluster: user_service_cluster
                             timeout: 30s
 
                     - name: shikshaspace_service
-                      domains:
-                        - "shikshaspace.shubhamsinghrajput.com"
+                      domains: ["shikshaspace.shubhamsinghrajput.com"]
                       routes:
-                        - match:
-                            prefix: "/"
+                        - match: {prefix: "/"}
                           route:
                             cluster: shikshaspace_service_cluster
                             timeout: 30s
 
                     - name: keycloak
-                      domains:
-                        - "keycloak.shubhamsinghrajput.com"
+                      domains: ["keycloak.shubhamsinghrajput.com"]
                       routes:
-                        - match:
-                            prefix: "/"
+                        - match: {prefix: "/"}
                           route:
                             cluster: keycloak_cluster
                             timeout: 60s
@@ -73,7 +65,7 @@ static_resources:
   clusters:
     - name: ui_cluster
       connect_timeout: 5s
-      type: STATIC
+      type: STRICT_DNS
       lb_policy: ROUND_ROBIN
       health_checks:
         - timeout: 5s
@@ -81,7 +73,7 @@ static_resources:
           unhealthy_threshold: 3
           healthy_threshold: 2
           http_health_check:
-            path: /
+            path: /actuator/health
       load_assignment:
         cluster_name: ui_cluster
         endpoints:
@@ -89,12 +81,12 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: 127.0.0.1
+                      address: localhost
                       port_value: 7500
 
     - name: user_service_cluster
       connect_timeout: 5s
-      type: STATIC
+      type: STRICT_DNS
       lb_policy: ROUND_ROBIN
       health_checks:
         - timeout: 5s
@@ -110,12 +102,12 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: 127.0.0.1
+                      address: localhost
                       port_value: 7501
 
     - name: shikshaspace_service_cluster
       connect_timeout: 5s
-      type: STATIC
+      type: STRICT_DNS
       lb_policy: ROUND_ROBIN
       health_checks:
         - timeout: 5s
@@ -131,12 +123,12 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: 127.0.0.1
+                      address: localhost
                       port_value: 7502
 
     - name: keycloak_cluster
       connect_timeout: 5s
-      type: STATIC
+      type: STRICT_DNS
       lb_policy: ROUND_ROBIN
       health_checks:
         - timeout: 5s
@@ -152,5 +144,5 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: 127.0.0.1
+                      address: localhost
                       port_value: 8080
