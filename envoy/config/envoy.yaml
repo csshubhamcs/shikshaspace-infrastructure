@@ -4,13 +4,6 @@ admin:
       address: 0.0.0.0
       port_value: 9901
 
-layered_runtime:
-  layers:
-    - name: static_layer_0
-      static_layer:
-        overload:
-          global_downstream_max_connections: 50000
-
 static_resources:
   listeners:
     - name: http_listener
@@ -18,15 +11,12 @@ static_resources:
         socket_address:
           address: 0.0.0.0
           port_value: 8081
-      drain_type: MODIFY_ONLY
       filter_chains:
         - filters:
             - name: envoy.filters.network.http_connection_manager
               typed_config:
                 "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
                 stat_prefix: ingress_http
-                drain_timeout: 30s
-                delayed_close_timeout: 10s
                 access_log:
                   - name: envoy.access_loggers.file
                     typed_config:
@@ -36,44 +26,43 @@ static_resources:
                   name: main_route
                   virtual_hosts:
                     - name: ui_service
-                      domains: ["shubhamsinghrajput.com"]
+                      domains:
+                        - "shubhamsinghrajput.com"
                       routes:
-                        - match: {prefix: "/"}
+                        - match:
+                            prefix: "/"
                           route:
-                            cluster: ui-cluster
+                            cluster: ui_cluster
                             timeout: 60s
-                            retry_policy:
-                              retry_on: "5xx,reset,connect-failure,refused-stream"
-                              num_retries: 2
 
                     - name: user_service
-                      domains: ["users.shubhamsinghrajput.com"]
+                      domains:
+                        - "users.shubhamsinghrajput.com"
                       routes:
-                        - match: {prefix: "/"}
+                        - match:
+                            prefix: "/"
                           route:
-                            cluster: user-service-cluster
+                            cluster: user_service_cluster
                             timeout: 30s
-                            retry_policy:
-                              retry_on: "5xx,reset,connect-failure,refused-stream"
-                              num_retries: 2
 
                     - name: shikshaspace_service
-                      domains: ["shikshaspace.shubhamsinghrajput.com"]
+                      domains:
+                        - "shikshaspace.shubhamsinghrajput.com"
                       routes:
-                        - match: {prefix: "/"}
+                        - match:
+                            prefix: "/"
                           route:
-                            cluster: shikshaspace-service-cluster
+                            cluster: shikshaspace_service_cluster
                             timeout: 30s
-                            retry_policy:
-                              retry_on: "5xx,reset,connect-failure,refused-stream"
-                              num_retries: 2
 
                     - name: keycloak
-                      domains: ["keycloak.shubhamsinghrajput.com"]
+                      domains:
+                        - "keycloak.shubhamsinghrajput.com"
                       routes:
-                        - match: {prefix: "/"}
+                        - match:
+                            prefix: "/"
                           route:
-                            cluster: keycloak-cluster
+                            cluster: keycloak_cluster
                             timeout: 60s
 
                 http_filters:
@@ -82,17 +71,19 @@ static_resources:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
 
   clusters:
-    - name: ui-cluster
+    - name: ui_cluster
       connect_timeout: 5s
       type: STATIC
       lb_policy: ROUND_ROBIN
-      outlier_detection:
-        consecutive_gateway_failure: 2
-        interval: 5s
-        base_ejection_time: 15s
-        max_ejection_percent: 50
+      health_checks:
+        - timeout: 5s
+          interval: 10s
+          unhealthy_threshold: 3
+          healthy_threshold: 2
+          http_health_check:
+            path: /
       load_assignment:
-        cluster_name: ui-cluster
+        cluster_name: ui_cluster
         endpoints:
           - lb_endpoints:
               - endpoint:
@@ -101,24 +92,19 @@ static_resources:
                       address: 127.0.0.1
                       port_value: 7500
 
-    - name: user-service-cluster
+    - name: user_service_cluster
       connect_timeout: 5s
       type: STATIC
       lb_policy: ROUND_ROBIN
       health_checks:
-        - timeout: 3s
-          interval: 5s
-          unhealthy_threshold: 2
-          healthy_threshold: 1
+        - timeout: 5s
+          interval: 10s
+          unhealthy_threshold: 3
+          healthy_threshold: 2
           http_health_check:
-            path: /actuator/health/readiness
-      outlier_detection:
-        consecutive_gateway_failure: 2
-        interval: 5s
-        base_ejection_time: 15s
-        max_ejection_percent: 50
+            path: /actuator/health
       load_assignment:
-        cluster_name: user-service-cluster
+        cluster_name: user_service_cluster
         endpoints:
           - lb_endpoints:
               - endpoint:
@@ -127,24 +113,19 @@ static_resources:
                       address: 127.0.0.1
                       port_value: 7501
 
-    - name: shikshaspace-service-cluster
+    - name: shikshaspace_service_cluster
       connect_timeout: 5s
       type: STATIC
       lb_policy: ROUND_ROBIN
       health_checks:
-        - timeout: 3s
-          interval: 5s
-          unhealthy_threshold: 2
-          healthy_threshold: 1
+        - timeout: 5s
+          interval: 10s
+          unhealthy_threshold: 3
+          healthy_threshold: 2
           http_health_check:
-            path: /actuator/health/readiness
-      outlier_detection:
-        consecutive_gateway_failure: 2
-        interval: 5s
-        base_ejection_time: 15s
-        max_ejection_percent: 50
+            path: /actuator/health
       load_assignment:
-        cluster_name: shikshaspace-service-cluster
+        cluster_name: shikshaspace_service_cluster
         endpoints:
           - lb_endpoints:
               - endpoint:
@@ -153,19 +134,19 @@ static_resources:
                       address: 127.0.0.1
                       port_value: 7502
 
-    - name: keycloak-cluster
+    - name: keycloak_cluster
       connect_timeout: 5s
       type: STATIC
       lb_policy: ROUND_ROBIN
       health_checks:
         - timeout: 5s
-          interval: 10s
+          interval: 15s
           unhealthy_threshold: 3
-          healthy_threshold: 1
+          healthy_threshold: 2
           http_health_check:
             path: /health
       load_assignment:
-        cluster_name: keycloak-cluster
+        cluster_name: keycloak_cluster
         endpoints:
           - lb_endpoints:
               - endpoint:

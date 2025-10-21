@@ -1,107 +1,44 @@
 version: '3.8'
 
 services:
-  user-service-blue:
+  user-service:
     image: registry.gitlab.com/shikshaspace/user-service:${USER_SERVICE_VERSION}
-    container_name: user-service-blue
-    env_file: ./user-service/.env
-    environment:
-      SERVER_PORT: 7501
-      SPRING_PROFILES_ACTIVE: blue
+    container_name: user-service
+    env_file:
+      - ./user-service/.env
+    network_mode: host
     restart: always
-    stop_grace_period: 60s
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:7501/actuator/health/readiness"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7501/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 40s
-    network_mode: host
 
-  user-service-green:
-    image: registry.gitlab.com/shikshaspace/user-service:${USER_SERVICE_VERSION}
-    container_name: user-service-green
-    env_file: ./user-service/.env
-    environment:
-      SERVER_PORT: 7511
-      SPRING_PROFILES_ACTIVE: green
-    restart: always
-    stop_grace_period: 60s
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:7511/actuator/health/readiness"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 40s
+  shikshaspace-service:
+    image: registry.gitlab.com/shikshaspace/shikshaspace-service:${SHIKSHASPACE_SERVICE_VERSION}
+    container_name: shikshaspace-service
+    env_file:
+      - ./shikshaspace-service/.env
     network_mode: host
-    profiles: ["green"]
-
-  shikshaspace-service-blue:
-    image: registry.gitlab.com/shikshaspace/shikshaspace-service:${SHIKSHASPACE_VERSION}
-    container_name: shikshaspace-service-blue
-    env_file: ./shikshaspace-service/.env
-    environment:
-      SERVER_PORT: 7502
-      SPRING_PROFILES_ACTIVE: blue
     restart: always
-    stop_grace_period: 60s
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:7502/actuator/health/readiness"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7502/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 20s
-    network_mode: host
 
-  shikshaspace-service-green:
-    image: registry.gitlab.com/shikshaspace/shikshaspace-service:${SHIKSHASPACE_VERSION}
-    container_name: shikshaspace-service-green
-    env_file: ./shikshaspace-service/.env
-    environment:
-      SERVER_PORT: 7512
-      SPRING_PROFILES_ACTIVE: green
-    restart: always
-    stop_grace_period: 60s
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:7512/actuator/health/readiness"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 20s
+  shikshaspace-ui:
+    image: registry.gitlab.com/shikshaspace/shikshaspace-ui:${SHIKSHASPACE_UI_VERSION}
+    container_name: shikshaspace-ui
+    env_file:
+      - ./shikshaspace-ui/.env
     network_mode: host
-    profiles: ["green"]
-
-  shikshaspace-ui-blue:
-    image: registry.gitlab.com/shikshaspace/shikshaspace-ui:${UI_VERSION}
-    container_name: shikshaspace-ui-blue
-    env_file: ./shikshaspace-ui/.env
-    environment:
-      SERVER_PORT: 7500
-      SPRING_PROFILES_ACTIVE: blue
     restart: always
-    stop_grace_period: 60s
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:7500/"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7500/"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 40s
-    network_mode: host
-
-  shikshaspace-ui-green:
-    image: registry.gitlab.com/shikshaspace/shikshaspace-ui:${UI_VERSION}
-    container_name: shikshaspace-ui-green
-    env_file: ./shikshaspace-ui/.env
-    environment:
-      SERVER_PORT: 7510
-      SPRING_PROFILES_ACTIVE: green
-    restart: always
-    stop_grace_period: 60s
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:7510/"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 40s
-    network_mode: host
-    profiles: ["green"]
